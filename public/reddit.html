@@ -14,7 +14,12 @@
 
         let numposts = document.getElementById("numposts").value;
 
-        fetch('https://www.reddit.com/r/javascript/top/.json?limit=' + numposts)
+        // NOTE: Using CORS proxy for development/learning purposes only
+        // In production, you should make API calls from your backend server
+        const corsProxy = 'https://corsproxy.io/?';
+        const redditUrl = 'https://www.reddit.com/r/javascript/top/.json?limit=' + numposts;
+
+        fetch(corsProxy + encodeURIComponent(redditUrl))
 
             .then(status)
 
@@ -36,8 +41,37 @@
             });
     }
 
+    async function getDataAsyncAwait() {
+        const results = document.querySelector("#data");
+        results.innerHTML = "loading...";
+
+        let numposts = document.getElementById("numposts").value;
+
+        // NOTE: Using CORS proxy for development/learning purposes only
+        // In production, you should make API calls from your backend server
+        const corsProxy = 'https://corsproxy.io/?';
+        const redditUrl = 'https://www.reddit.com/r/javascript/top/.json?limit=' + numposts;
+
+        try {
+            const response = await fetch(corsProxy + encodeURIComponent(redditUrl));
+            status(response); // This will throw if status is not OK
+            const json = await response.json();
+            results.innerHTML = ""; // remove the loading message
+
+            // you must inspect the response to understand its format
+            json.data.children.forEach(element => {
+                results.insertAdjacentHTML('beforeend',
+                    `<li>${element.data.title}</li>`)
+            });
+
+        } catch (err) {
+            results.innerHTML = `Something went wrong...try again later. ${err}`;
+        }
+    }
+
     document.addEventListener('DOMContentLoaded',  () => {
         document.querySelector("#getdata").addEventListener("click", getData);
+        document.querySelector("#getdata-async").addEventListener("click", getDataAsyncAwait);
     });
 
     const status = (response) => {
@@ -55,6 +89,7 @@
     <label for="numposts">Number of posts:</label>
     <input type="number" name="numposts" min="1" max="30" id="numposts" value="1">
     <button id="getdata">Get data</button>
+    <button id="getdata-async">Get data async</button>
     <p>Latest posts:</p>
     <ol id="data">
     </ol>

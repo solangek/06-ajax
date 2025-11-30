@@ -24,8 +24,7 @@
 
     const json = response => response.json();
 
-
-        // the function that triggers an Ajax call
+    // the function that triggers an Ajax call
     const getData = () => {
         fetch('./api/some.json')
             .then(status)
@@ -37,7 +36,7 @@
                 data.cars.forEach(car => {
                     html += `<li>${car.name}: ${car.models.map(model => model).join(', ')}</li>`;
                 });
-                // eqwuivalent to the above:
+                // equivalent to the above:
                 // data.cars.forEach(car => {
                 //     html += `<li>${car.name}: `;
                 //     car.models.forEach(model => {
@@ -51,6 +50,23 @@
                 console.log('Request failed', error);
             });
     };
+
+    async function getDataAsyncAwait() {
+        // same function using async/await
+        try {
+            const response = await fetch('./api/some.json');
+            await status(response);
+            const data = await json(response);
+
+            let html = `<h2>Name: ${data.name}</h2>`;
+            data.cars.forEach(car => {
+                html += `<li>${car.name}: ${car.models.map(model => model).join(', ')}</li>`;
+            });
+            document.querySelector("#data").innerHTML = html;
+        } catch (error) {
+            console.log('Request failed', error);
+        }
+    }
 
 
     document.addEventListener('DOMContentLoaded', () => {

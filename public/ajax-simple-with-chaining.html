@@ -29,6 +29,26 @@
             });
     }
 
+    async function getDataAsyncAwait() {
+        // same function using async/await
+        try {
+            const response = await fetch('./api/some.json');
+            if (response.status !== 200) {
+                document.querySelector("#data").innerHTML = 'Looks like there was a problem. Status: ' + response.status;
+                return;
+            }
+            const data = await response.json();
+            let html = `<h2>Name: ${data.name}</h2><ol>`;
+            data.cars.forEach(car => {
+                html += `<li>${car.name}: ${car.models.join(', ')}</li>`;
+            });
+            html += `</ol>`;
+            document.querySelector("#data").innerHTML = html;
+        } catch (err) {
+            console.log('Fetch Error:', err);
+        }
+    }
+
     document.addEventListener('DOMContentLoaded', () => {
         document.querySelector("#getdata").addEventListener("click", getData);
     }, false);

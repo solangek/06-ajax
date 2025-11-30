@@ -43,6 +43,28 @@
                 });
         }
 
+        // same function using async/await
+        async function getDataAsync() {
+            try {
+                const response = await fetch('./api/some.json');
+                if (response.status !== 200) {
+                    document.querySelector("#data").innerHTML = 'Looks like there was a problem. Status: ' +
+                        response.status;
+                    return;
+                }
+                await response.json();
+                let html = "<h2> Metadata (async/await)</h2><pre>";
+                html += response.headers.get('Content-Type') + "<br/>";
+                html += response.headers.get('Date') + "<br/>";
+                html += response.status + "<br/>";
+                html += response.statusText + "<br/>";
+                html += response.url + "<br/></pre>";
+                document.querySelector("#data").innerHTML = html;
+            } catch (err) {
+                console.log('Fetch Error :', err);
+            }
+        }
+
         document.addEventListener('DOMContentLoaded', function () {
             document.querySelector("#getdata").addEventListener("click", getData);
         }, false);

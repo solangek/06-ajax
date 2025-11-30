@@ -44,6 +44,29 @@
                 });
         }
 
+        const getDataAsyncAwait = async () => {
+            // same function using async/await
+            try {
+                const ajaxParams = {
+                    method: 'POST',
+                    body: JSON.stringify({ min: 1, max: 100 }),
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                };
+
+                const response = await fetch('./api/some.json', ajaxParams);
+                if (response.status !== 200) {
+                    document.querySelector("#data").innerHTML = `Looks like there was a problem. Status: ${response.status}`;
+                    return;
+                }
+                const data = await response.json();
+                document.querySelector("#data").innerHTML = generateHTML(data);
+            } catch (err) {
+                console.log('Fetch Error:', err);
+            }
+        };
+
         const generateHTML = data => {
             let html = `<h2>Name: ${data.name}</h2><ol>`;
             data.cars.forEach(car => {
